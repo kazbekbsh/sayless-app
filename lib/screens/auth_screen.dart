@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:web_rtc/services/config_service.dart';
 
 class AuthScreen extends StatefulWidget {
-  final String baseUrl;
 
-  AuthScreen(this.baseUrl);
+  AuthScreen();
 
   @override
   _AuthScreenState createState() => _AuthScreenState();
@@ -17,9 +17,10 @@ class _AuthScreenState extends State<AuthScreen> {
   String password = '';
   String confirmPassword = '';
   String error = '';
+  final config = ConfigService().config;
 
   Future<void> handleSubmit() async {
-    final endpoint = isRegister ? '${widget.baseUrl}/register' : '${widget.baseUrl}/login';
+    final endpoint = isRegister ? '${config.apiBaseUrl}/register' : '${config.apiBaseUrl}/login';
     final body = jsonEncode({'username': username, 'password': password});
     try {
       final response = await http.post(Uri.parse(endpoint), body: body, headers: {'Content-Type': 'application/json'});

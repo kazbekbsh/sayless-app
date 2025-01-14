@@ -21,21 +21,17 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final config = ConfigService().config;
 
     return MaterialApp(
       title: 'Chat App',
       initialRoute: '/',
       routes: {
-        '/': (context) => AuthScreen(config.apiBaseUrl),
+        '/': (context) => AuthScreen(),
         '/friends': (context) => FriendsScreen(
-          config.apiBaseUrl,
           (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)['myId'],
           (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)['token'],
         ),
         '/call': (context) => WebRTCVideoChat(
-          config.websocketUrl,
-          config.iceServers,
           (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)['myId'],
           (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)['friendId'],
         ),

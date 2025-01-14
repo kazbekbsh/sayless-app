@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_rtc/services/config_service.dart';
 
 class WebRTCVideoChat extends StatefulWidget {
   final String friendId;
   final String myId;
-  final String websocketUrl;
-  final List<Map<String, dynamic>> iceServers;
 
-  WebRTCVideoChat(this.websocketUrl, this.iceServers, this.myId, this.friendId);
+  WebRTCVideoChat(this.myId, this.friendId);
 
   @override
   _WebRTCVideoChatState createState() => _WebRTCVideoChatState();
@@ -19,6 +18,8 @@ class _WebRTCVideoChatState extends State<WebRTCVideoChat> {
 
   final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
+
+  final config = ConfigService().config;
 
   WebSocketChannel? _signalingSocket;
   RTCPeerConnection? _peerConnection;
@@ -44,7 +45,7 @@ class _WebRTCVideoChatState extends State<WebRTCVideoChat> {
 
     final clientId = widget.myId;
 
-    final url = '${widget.websocketUrl}?id=$clientId';
+    final url = '${config.websocketUrl}?id=$clientId';
     _signalingSocket = WebSocketChannel.connect(Uri.parse(url));
 
     _signalingSocket?.stream.listen((data) async {
@@ -91,7 +92,7 @@ class _WebRTCVideoChatState extends State<WebRTCVideoChat> {
 
   void _setupPeerConnection() async {
     _peerConnection = await createPeerConnection({
-      'iceServers': widget.iceServers,
+      'iceServers': config.iceServers,
     });
 
     _localStream?.getTracks().forEach((track) {

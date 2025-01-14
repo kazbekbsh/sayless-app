@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:web_rtc/services/config_service.dart';
 
 class FriendsScreen extends StatefulWidget {
-  final String baseUrl;
   final String token;
   final String myId;
-  FriendsScreen(this.baseUrl, this.myId, this.token);
+  FriendsScreen(this.myId, this.token);
 
   @override
   _FriendsScreenState createState() => _FriendsScreenState();
@@ -17,10 +17,12 @@ class _FriendsScreenState extends State<FriendsScreen> {
   String newFriend = '';
   String error = '';
 
+  final config = ConfigService().config;
+
   Future<void> fetchFriends() async {
     try {
       final response = await http.get(
-        Uri.parse('${widget.baseUrl}/users'),
+        Uri.parse('${config.apiBaseUrl}/users'),
         headers: {'Authorization': 'Bearer ${widget.token}'},
       );
       if (response.statusCode == 200) {
@@ -38,7 +40,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
   Future<void> addFriend() async {
     try {
       final response = await http.post(
-        Uri.parse('${widget.baseUrl}/api/friends'),
+        Uri.parse('${config.apiBaseUrl}/api/friends'),
         headers: {'Authorization': 'Bearer ${widget.token}', 'Content-Type': 'application/json'},
         body: jsonEncode({'nickname': newFriend}),
       );
